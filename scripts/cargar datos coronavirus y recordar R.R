@@ -3,9 +3,11 @@
 # Ver cuantos registros tenemos
 # summary(datos)
 
-print ("Hola Mundo")
+print ("Hola Mundodfgdfg ")
 
 # Cargar las librerías
 library(readr)
+
+print ("Cargar Datos")
 
 
