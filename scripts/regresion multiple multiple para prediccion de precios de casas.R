@@ -12,7 +12,7 @@ entrena <- read_csv("datos/house-prices-advanced-regression-techniques/train.csv
 # Los datos de validación
 valida <- read.csv("datos/house-prices-advanced-regression-techniques/train.csv")
 
-# Ver los rimeros regisros de cada conjunto de datos
+# Ver los primeros regisros de cada conjunto de datos
 head(entrena)
 head(valida)
 
@@ -24,14 +24,14 @@ str(entrena)
 nrow(entrena)
 ncol(entrena)
 
-# EXPLORAR datos
+# EXPLORAR datos de entrenamiento
 # Se visualiza como una distribución normal
 ggplot(entrena, aes(x=SalePrice)) +
   geom_histogram()
 
 
 # DEPURAR ******
-# Cómo detectar cuáles variables utilziar como independientes
+# Cómo detectar cuáles variables utilzar como independientes
 # Sólo las variables numéricas
 
 sapply(entrena, is.numeric) # Cuáles son ?
