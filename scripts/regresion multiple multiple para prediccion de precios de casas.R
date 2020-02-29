@@ -50,9 +50,17 @@ correlaciones
 
 cor.soloPrecio <- select (correlaciones, SalePrice) %>%
   filter(SalePrice >= 0.6)
-cor.soloPrecio
+cor.soloPrecientrenaCol.Correl.Priceo
 
-# Lo vemos en View
+# Otra manera de saber las variables
+entrenaCol.Correl.Price <- data.frame(cbind(rownames(correlaciones), correlaciones$SalePrice))
+colnames(entrenaCol.Correl.Price) <- c("variable", 'correlacion')
+entrenaCol.Correl.Price <- arrange(entrenaCol.Correl.Price, desc(correlacion))
+entrenaCol.Correl.Price
+head(entrenaCol.Correl.Price) # Las mejores seis correlaiones con el SalePrice
+
+
+# Lo vemos en View todas las correlaciones
 View(correlaciones)
 # Las columnas mas correlaciones con SalePrice
 # OverallQual, GrLivArea, GarageCars, GarageArea, TotalBsmtSF, 1stFlrSF
@@ -71,11 +79,6 @@ ggplot(entrena, aes(x=GrLivArea, y=SalePrice)) +
 
 ggplot(entrena, aes(x=GarageCars, y=SalePrice)) +
   geom_point(color="yellow") + geom_smooth(method = "lm")
-
-
-
-
-
 
 
 # Cuáles son variables numéricas
