@@ -10,12 +10,6 @@ library(readr)
 library(dplyr)
 library(ggplot2)
 
-print ("Cargar Datos")
-
-cat("probando un nuevo print")
-
-
-
 # Cargar los datos
 datos <- read.csv("datos/covid_19_data.csv")
 datos
@@ -25,10 +19,17 @@ datos <- read.csc("https://raw.githubusercontent.com/rpizarrog/FundamentosMachin
 datos
 
 
+# Explorar los datos
 summary(datos)
 str(datos)
 
 unique(datos$Country.Region)
+class(datos)
+head(datos)
+tail(datos)
+nrow(datos)
+ncol(datos)
+
 
 
 # ¿Cuángos casos confirmados ?
@@ -40,26 +41,27 @@ sum(datos$Deaths)
 # ¿Porcentaje, descesos confirmados
 sum(datos$Confirmed / sum(datos$Deaths))
 
+# Porcentaje
 paste(round(sum(datos$Confirmed / sum(datos$Deaths)),2), " % ")
 
-class(datos)
-head(datos)
-tail(datos)
-nrow(datos)
-ncol(datos)
 
-
+# Resumir por País y Región
 casos <- datos %>%
           group_by(Country.Region) %>%
           summarise(casosConfirmados = sum(Confirmed),
-                    casosDescesos = sum(Deaths))
+                    casosDecesos = sum(Deaths))
 
+# Ordenar descendente y agregar columna porc =  %
 casos <- data.frame(arrange(casos, desc(casosConfirmados) ))
 
-casos <- cbind(casos, porc=paste(round(casos$casosDescesos / casos$casosConfirmados * 100,2),'%'))
+casos <- cbind(casos, porc=paste(round(casos$casosDecesos / casos$casosConfirmados * 100,2),'%'))
 
 casos
 
+# Interpretación
+# Llama la atención que en países como Irán y Filipinas hay un alto porcentaje de decesos
+# en relación a los casos detectados
+# Por supuesto en China hay mas casos confirmados y decesos
 
 
 
