@@ -10,7 +10,7 @@ library(dplyr)
 entrena <- read_csv("datos/house-prices-advanced-regression-techniques/train.csv")
 
 # Los datos de validación
-valida <- read.csv("datos/house-prices-advanced-regression-techniques/train.csv")
+valida <- read.csv("datos/house-prices-advanced-regression-techniques/test.csv")
 
 # Ver los primeros regisros de cada conjunto de datos
 head(entrena)
@@ -78,8 +78,26 @@ ggplot(entrena, aes(x=GrLivArea, y=SalePrice)) +
   geom_point(color="darkgreen") + geom_smooth(method = "lm")
 
 ggplot(entrena, aes(x=GarageCars, y=SalePrice)) +
-  geom_point(color="yellow") + geom_smooth(method = "lm")
+  geom_point(color="red") + geom_smooth(method = "lm")
+
+ggplot(entrena, aes(x=GarageArea, y=SalePrice)) +
+  geom_point(color="red") + geom_smooth(method = "lm")
 
 
-# Cuáles son variables numéricas
+ggplot(entrena, aes(x=TotalBsmtSF, y=SalePrice)) +
+  geom_point(color="orange") + geom_smooth(method = "lm")
+
+
+ggplot(entrena, aes(x="1stFlrSF", y=SalePrice)) +
+  geom_point(color="purple") + geom_smooth(method = "lm")
+
+
+modelo <- lm(formula = SalePrice ~ OverallQual + 
+               GrLivArea + GarageCars + GarageArea + 
+               TotalBsmtSF , entrena)
+modelo
+
+summary(modelo)
+
+
 
