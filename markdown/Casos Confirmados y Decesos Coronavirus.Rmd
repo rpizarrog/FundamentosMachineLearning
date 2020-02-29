@@ -6,10 +6,12 @@ output: html_document
 ---
 
 ### Casos coronavirus
+* URL https://rpubs.com/rpizarro/579962
+
 
 #### Las librerías
 * Slo se usan por el momento readr() y dplyr()
-```{r}
+```{r warning=FALSE, message=FALSE}
 library(readr)
 library(dplyr)
 library(ggplot2)
