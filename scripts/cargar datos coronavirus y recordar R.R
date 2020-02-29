@@ -37,6 +37,7 @@ sum(datos$Confirmed / sum(datos$Deaths))
 paste(round(sum(datos$Confirmed / sum(datos$Deaths)),2), " % ")
 
 
+print("Cambios")
 
 
 
