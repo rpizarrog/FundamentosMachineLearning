@@ -3,8 +3,6 @@
 # Ver cuantos registros tenemos
 # summary(datos)
 
-#print ("Hola Mundo, de nuevo")
-
 # Cargar las librerías
 library(readr)
 library(dplyr)

@@ -1,0 +1,62 @@
+---
+title: "Casos Coronavirus"
+author: "Rubén Pizarro"
+date: "29/2/2020"
+output: html_document
+---
+
+### Casos coronavirus
+
+#### Las librerías
+* Slo se usan por el momento readr() y dplyr()
+```{r}
+library(readr)
+library(dplyr)
+library(ggplot2)
+```
+
+
+#### Los datos
+* Cargar datos de url gihub
+* Presenta solo los primeros y últimos seis registros
+```{r warning=FALSE, message=FALSE}
+datos <- read.csv("https://raw.githubusercontent.com/rpizarrog/FundamentosMachineLearning/master/datos/covid_19_data.csv")
+head(datos)
+tail(datos)
+```
+
+
+#### Explorando datos
+```{r}
+summary(datos)
+str(datos)
+
+unique(datos$Country.Region)
+class(datos)
+head(datos)
+tail(datos)
+nrow(datos)
+ncol(datos)
+```
+
+#### Agrupando datos por Pais Region
+```{r}
+casos <- datos %>%
+          group_by(Country.Region) %>%
+          summarise(casosConfirmados = sum(Confirmed),
+                    casosDecesos = sum(Deaths))
+
+# Ordenar descendente y agregar columna porc =  %
+casos <- data.frame(arrange(casos, desc(casosConfirmados) ))
+
+casos <- cbind(casos, porc=paste(round(casos$casosDecesos / casos$casosConfirmados * 100,2),'%'))
+
+casos
+```
+
+#### Interpretación
+* Llama la atención que en países como Irán y Filipinas hay un alto porcentaje de decesos en relación a los casos detectados.
+* Por supuesto en China hay mas casos confirmados y decesos
+
+
+
