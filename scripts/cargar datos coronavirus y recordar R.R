@@ -19,6 +19,10 @@ cat("probando un nuevo print")
 datos <- read.csv("datos/covid_19_data.csv")
 datos
 
+# Cargar datos desde gihub
+datos2 <- read.csc("https://raw.githubusercontent.com/rpizarrog/FundamentosMachineLearning/master/datos/covid_19_data.csv")
+datos2
+
 summary(datos)
 str(datos)
 
