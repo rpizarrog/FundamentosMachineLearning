@@ -4,6 +4,7 @@
 # LIBRERIAS
 library(readr)
 library(dplyr)
+library(ggplot2)
 
 # CARGAR DATOS ******
 # Los datos de entrenamiento
@@ -98,6 +99,9 @@ modelo <- lm(formula = SalePrice ~ OverallQual +
 modelo
 
 summary(modelo)
+
+print("Aqui vamos ..pendiente")
+
 
 
 
