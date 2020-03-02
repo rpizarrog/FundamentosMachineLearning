@@ -255,3 +255,4 @@ summary(step.modelo2)
 
 # Residual standard error: 35040 on 1439 degrees of freedom
 # Multiple R-squared:  0.8081,	Adjusted R-squared:  0.8055
+# Cual modeolo elegir ?
