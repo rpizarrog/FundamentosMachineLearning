@@ -49,6 +49,9 @@ n
 # El comando para generar un modelo de árbol de decisión, usando la librería rpart 
 # lleva el mismo nombre
 
+
+set.seed(2020) # Semilla
+
 arbol <- rpart(formula = SalePrice ~ ., data = entrenaNumericas)
 arbol
 
@@ -62,8 +65,25 @@ arbol
 # extra=100 other models
 # rpart.plot(arbol, extra = 106)   # Pendiente .... No funciona
 
-prp(arbol, type = 2, nn=T, 
-    fallen.leaves = T, faclen = 4,
+prp(arbol, type = 2, nn = TRUE, 
+    fallen.leaves = TRUE, faclen = 4,
+    varlen = 8,  shadow.col = "gray")
+
+
+# ctable
+
+arbol$cptable
+
+
+# plotcp(arbol)
+plotcp(arbol)
+
+# Podar el árbol prune()
+# MAs simple que el primer arbol
+arbol.Recortado <- prune(arbol, cp = 0.01989959)
+
+prp(arbol.Recortado, type = 2, nn = TRUE, 
+    fallen.leaves = TRUE, faclen = 4,
     varlen = 8,  shadow.col = "gray")
 
 
