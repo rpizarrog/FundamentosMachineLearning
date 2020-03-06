@@ -1,0 +1,237 @@
+---
+title: "Predicciones de precio de venta de casas con datos trail y test"
+author: "Rubén Pizarro"
+date: "6/3/2020"
+output: html_document
+---
+
+### Predicciones de precio de venta casas con datos de trail y test
+#### Descripción
+* Se cargan librerías
+* Se descargan los datos
+* Se exploran los datos de entrenamiento
+* Se visualiza histograma de precio como una distribución normal
+* Se identifican las variables numéricas del conjunto de datos de entrenamiento
+* Tabla de correlaciones del conjunto de datos de entrenamiento
+* Se depuran nombres de variables extrañas a nombre mas específicos y practicos oara su procesamiento
+* Se crean modelos de regresión lineal mútiple
+* Se generan a partir del mejor modelo el elimnar variables de poca representaividad estadísticamente significativas
+* Se identifica el mejor modelo
+* Se hacen predicciones con el conjunto de validación previa limpieza de sus datos
+
+#### Cargar librerías
+```{r message=FALSE, warning=FALSE}
+library(readr)
+library(dplyr)
+library(ggplot2)
+library(reshape) # Para renombrar columnas
+```
+
+#### Cargar los datos
+```{r message=FALSE, warning=FALSE}
+# Los datos de entrenamiento
+entrena <- read_csv("../datos/house-prices-advanced-regression-techniques/train.csv")
+
+# Los datos de validación
+valida <- read.csv("../datos/house-prices-advanced-regression-techniques/test.csv")
+
+```
+
+#### Explorar los datos
+* Se visualizan los primeros seis registos de cada conjunto de datos
+* Se exploran solo los datos de entrenamiento por el momento
+```{r}
+# Ver los primeros registros de cada conjunto de datos
+head(entrena)
+head(valida)
+
+str(entrena)
+summary(entrena)
+
+nrow(entrena) # Registros
+ncol(entrena) # Columnas
+```
+
+
+#### Explorar con histograma datos de entrenamiento
+```{r}
+# Se visualiza como una distribución normal
+ggplot(entrena, aes(x=SalePrice)) + geom_histogram()
+
+```
+
+#### Identificar variables numéricas el conjunto de entrenamiento
+```{r}
+sapply(entrena, is.numeric) # Cuáles son ?
+cualesNumericas <- which(sapply(entrena, is.numeric))
+nombresColumnas <- names(cualesNumericas)
+nombresColumnas
+# Ver el diccionario de datos ???
+
+# Conjunto 
+entrenaNumericas <- select(entrena, nombresColumnas)
+entrenaNumericas
+```
+
+#### Correlaciones de la variable SalePrice del conjunto de datos de entrenamiento
+* Se muestra y sólo interesa las correlaciones de 
+* cbind() concatena columnas y el resultado de ello, indicarlo en un data.frame entrenaCol.Correl.Price
+```{r}
+correlaciones <- data.frame(cor(entrenaNumericas))
+entrenaCol.Correl.Price <- data.frame(cbind("variable" = rownames(correlaciones),"correlacion"= correlaciones$SalePrice)) 
+entrenaCol.Correl.Price
+```
+
+#### Ordenar de mayor a menor las correlaciones de SalePrice
+* Crear un conjunto de datos ordenado de mayor a menor por el valor de la correlación del precio de ventas con las demás variables
+* Determinar head(), las mejores seis correlaciones con el SalePrice
+
+```{r}
+entrenaCol.Correl.Price <- arrange(entrenaCol.Correl.Price, desc(correlacion))
+entrenaCol.Correl.Price
+head(entrenaCol.Correl.Price) 
+```
+
+* Las columnas mas correlaciones con SalePrice
+ OverallQual, GrLivArea, GarageCars, GarageArea, TotalBsmtSF, 1stFlrSF
+* La variable 1stFlrSF comienza con número, para efecto de procesar adecuadamente el modelo se debe renombrar, al igual que otras dos variables más adelante vistas
+
+#### Algunos diagramas de dispersión con e´stas variables en relación a SalePrice
+```{r}
+ggplot(entrenaNumericas, aes(x=OverallQual, y=SalePrice)) +
+  geom_point(color="darkred") + geom_smooth(method = "lm")
+
+ggplot(entrenaNumericas, aes(x=GrLivArea, y=SalePrice)) +
+  geom_point(color="darkgreen") + geom_smooth(method = "lm")
+
+ggplot(entrena, aes(x=GarageCars, y=SalePrice)) +
+  geom_point(color="red") + geom_smooth(method = "lm")
+
+ggplot(entrenaNumericas, aes(x=GarageArea, y=SalePrice)) +
+  geom_point(color="red") + geom_smooth(method = "lm")
+
+ggplot(entrenaNumericas, aes(x=TotalBsmtSF, y=SalePrice)) +
+  geom_point(color="orange") + geom_smooth(method = "lm")
+
+ggplot(entrenaNumericas, aes(x="1stFlrSF", y=SalePrice)) +
+  geom_point(color="purple") + geom_smooth(method = "lm")
+
+```
+
+
+#### Modelo de regresión lineal mútiple
+##### modelo1
+* Determinar el modelo de regresión lineal en donde
+* SalePrice es el precio de venta y la variable dependiente
+* OverallQual, GrLivArea, GarageCars, GarageArea, TotalBsmtSF, 1stFlrSF son las variables independientes que fueron elegidas por ser las de mayor valor correlacional
+##### Renombrar variables
+* Por cuestión práctica se sugiere antes del hacer el modelo, lo siguiente: 
+* Cambiar el nombre de variable 1stFlrSF en conjunto de datos de solo las variable numéricas que empieza con 1 a lstFlrSF 
+* entrenaNumericas$lstFlrSF <- entrenaNumericas$`1stFlrSF`, esto agrga una nueva variable y no se necesita llenarnos de más variables, no es tan práctico, mejor la siguiente ...
+* entrenaNumericas = rename(entrenaNumericas, c(`1stFlrSF`="lstFlrSF"))  # aprovechando la librería reshape
+```{r}
+entrenaNumericas = rename(entrenaNumericas, c(`1stFlrSF`="lstFlrSF"))  # opcion 2, renombra la variable
+```
+
+##### modelo1
+* Se identificaron las variables OverallQual, GrLivArea, 
+GarageCars, GarageArea, TotalBsmtSF, 1stFlrSF que tienen
+un valor de correlacion con respecto al precio de venta entre
+* Las variables que incluye el modelo de regresión lineal, 
+representan el 77.37 y 77.21% de la variabilidad del 
+precio de venta de las casas
+```{r}
+modelo1 <- lm(formula = SalePrice ~ OverallQual + 
+               GrLivArea + GarageCars + GarageArea +
+               TotalBsmtSF +  + FullBath + lstFlrSF +
+                TotRmsAbvGrd + YearBuilt + YearRemodAdd, entrenaNumericas)
+summary(modelo1)
+```
+
+#### Interpretación del modelo1
+* En los modelos lineales múltiples, cuantos más predictores se incluyan en el modelo mayor es el valor de R2, ya que, por poco que sea, cada predictor va a explicar una parte de la variabilidad observada en Y. 
+* Es por esto que R2 no puede utilizarse para comparar modelos con distinto número de predictores
+* R2ajustado introduce una penalización al valor de R2 
+por cada predictor que se introduce en el modelo. 
+* El valor de la penalización depende del número de predictores utilizados y del tamaño de la muestra, es decir, del número de grados de libertad. 
+* Cuanto mayor es el tamaño de la muestra, más predictores 
+se pueden incorporar en el modelo. 
+* R2ajustado permite encontrar el mejor modelo, aquel que 
+consigue explicar mejor la variabilidad de Y con el menor 
+número de predictores
+
+##### modelo2
+* Crear un modelo con todas las variables numéricas en el conjnto de datos de entrenamiento
+* Antes se debe cambiar nombres a ciertas variables que empiezan con caracter 2 y 3 respectivamente
+* entrenaNumericas$tndFlrSF <- entrena$`2ndFlrSF`
+* entrenaNumericas$tSsnPorch <- entrena$`3SsnPorch`
+```{r}
+entrenaNumericas = rename(entrenaNumericas, c(`2ndFlrSF`="tndFlrSF"))  # renombra la variable
+entrenaNumericas = rename(entrenaNumericas, c(`3SsnPorch`="tSsnPorch"))  # renombra la variable
+
+modelo2 <- lm(formula = SalePrice ~ ., data = entrenaNumericas)
+modelo2
+
+summary(modelo2)
+```
+
+#### Interpretación del modelo2
+* Con todas las variables cuantitativas
+* Multiple R-squared:  0.809,	Adjusted R-squared:  0.8047 
+* Representan el 80.9 y 80.47 de la variabilidad del precio de venta
+* ¿Cuales variables tienen menor valor de estadísticamente significativas en el modeolo de regresión, las que menor variabilidad ofrecen etadísticamente significativas a la variable dependiente?
+
+
+##### modelo3
+* Se crea un modelo de regresión mútiple con algunas variables elegidas aleatoriamente por el analista
+```{r}
+modelo3 <- lm(formula = SalePrice ~ LotArea + 
+                OverallQual + OverallCond + YearBuilt +
+                BsmtFinSF1 + lstFlrSF + tndFlrSF +
+                BedroomAbvGr + TotRmsAbvGrd + GarageCars +ScreenPorch, entrenaNumericas )
+modelo3
+summary(modelo3)
+```
+
+* Este último modeolo representa los siguietne svalores Multiple R-squared:  0.7937, Adjusted R-squared:  0.7921 
+* Significan que represenan el 79% de la variabilidad del precio de venta
+
+#### Preguntas para el análisis
+* ¿Cual modelo de regresión lineal múltiple tomar y porqué?
+* ¿Cuáles variables son las que más representan variabilidad al precio de venta de las casas?
+* Utilizar el paquete MASS para eliminar variables automáticamente en el modelo
+* Se intenta eliminar variables a partir del modelo2 que contiene todas las variables
+
+#### La librería previamente instalada
+```{r warning=FALSE, message= FALSE}
+library(MASS)
+```
+
+#### El mejor modelo quitando variables
+* se hace una selección de las variables para dentifiar cuales son importantes y cuáles no
+* Cuando se dispone de muchas variables explicativas 
+potenciales, las estrategias de regresión anteriores definen normalmente un subconjunto posible de modelos y el problema radica en seleccionar el mejor entre ellos
+* Se puede utilizar distintos estadísticos, como }
+* el criterio de información de Akaike AIC, 
+* el criterio de información Bayesiana BIC, 
+* el coeficiente de determinación R2, 
+* el coeficiente de determinación corregido R2aj, 
+* la varianza residual o el estadístico Cp de Mallows
+* Para este ejemplo se tom AIC
+* La función step() del paquete base stats y stepAIC del paquete MASS, permite seleccionar el método mediante el argumento direction = c(«both», «backward», «forward»). 
+* Utilizan el AIC como criterio de selección de variables.")
+* Al intentar generar setpAIC se restringue dado que hay algunos Na en los coeficientes del modelo2
+* Hay que quitarl las varibles del modelo
+* which(is.na(modelo2$coefficients))
+```{r}
+modelo2
+# Cuales son NA para quitar ...
+which(is.na(modelo2$coefficients))
+# Generar el modelo2 nuevamente sin esas variables 
+modelo2 <- lm(formula = SalePrice ~ ., data = select(entrenaNumericas, -TotalBsmtSF, -GrLivArea))
+
+step.modelo2 <- stepAIC(modelo2, direction = "backward", trace = FALSE)
+
+summary(step.modelo2)
+```
+

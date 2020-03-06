@@ -1,5 +1,4 @@
-<<<<<<< HEAD
-# Prediccion de casas
+# Prediccion de casas con dtos trail y test de kaggle
 
 library(readr)
 library(dplyr)
@@ -67,7 +66,7 @@ entrenaCol.Correl.Price
 
 # Crear un conjunto de datos ordenado de mayor a menor por el valor
 # de la correlación del precio de ventas con las demás variables
-# Determinar head(), las mejores seis correlaiones con el SalePrice
+# Determinar head(), las mejores seis correlaciones con el SalePrice
 entrenaCol.Correl.Price <- arrange(entrenaCol.Correl.Price, desc(correlacion))
 entrenaCol.Correl.Price
 head(entrenaCol.Correl.Price) 
@@ -113,10 +112,14 @@ ggplot(entrenaNumericas, aes(x="1stFlrSF", y=SalePrice)) +
 # OverallQual, GrLivArea, GarageCars, GarageArea, TotalBsmtSF, 1stFlrSF
 # son las variables independientes
 
-# Cambiar el nombre de variable 1stFlrSF en conjunto de 
-# entrenamiento de solo las variable numéricas
-# que empieza con 1 a lstFlrSF que empezará zon l en entrena
-# entrenaNumericas$lstFlrSF <- entrena$`1stFlrSF` # más práctico; opcion 1, crea nueva variable .. No es tan adecuado
+# Por cuestión práctica se sugiere lo siguiente: 
+# Cambiar el nombre de variable 1stFlrSF en conjunto de datos
+# de solo las variable numéricas
+# que empieza con 1 a lstFlrSF 
+# entrenaNumericas$lstFlrSF <- entrena$`1stFlrSF` 
+# más práctico; opcion 1, crea nueva variable .. 
+# Esta opc , no es tan adecuado, mejor la siguiente ...
+# entrenaNumericas = rename(entrenaNumericas, c(`1stFlrSF`="lstFlrSF"))  # opcion 2, renombra la variable
 entrenaNumericas = rename(entrenaNumericas, c(`1stFlrSF`="lstFlrSF"))  # opcion 2, renombra la variable
 
 # Crear un modelo con ciertas variables numéricas
@@ -167,8 +170,6 @@ R2ajustado permite encontrar el mejor modelo, aquel que
 consigue explicar mejor la variabilidad de Y con el menor 
 número de predictores.")
 
-print("Aqui vamos ..pendiente")
-
 
 # Crear un modelo con todas las variables numéricas en el conjnto de
 # datos de entrenamiento 'entrena'
@@ -178,7 +179,6 @@ print("Aqui vamos ..pendiente")
 
 entrenaNumericas = rename(entrenaNumericas, c(`2ndFlrSF`="tndFlrSF"))  # renombra la variable
 entrenaNumericas = rename(entrenaNumericas, c(`3SsnPorch`="t3SsnPorch"))  # renombra la variable
-
 
 modelo2 <- lm(formula = SalePrice ~ ., data = entrenaNumericas)
 modelo2
@@ -214,7 +214,6 @@ summary(modelo3)
 # ¿Cual modelo de regresión lineal múltiple tomar y porqué?
 summary(entrenaNumericas$SalePrice)
 
-# Otra vez
 cat("R2ajustado introduce una penalización al valor de R2 
 por cada predictor que se introduce en el modelo. 
 El valor de la penalización depende del número de predictores
@@ -227,8 +226,8 @@ consigue explicar mejor la variabilidad de Y con el menor
 número de predictores.")
 
 
-# MArgen para mejora
-# Utilizar el paquete MASS para eliminar variable autpmática en el modelo
+# Margen para mejora
+# Utilizar el paquete MASS para eliminar variables automáticamente en el modelo
 # Se intenta eliminar variables del modelo2
 library(MASS)
 
@@ -249,15 +248,14 @@ print("La step del paquete stats y stepAIC del paquete MASS,
       direction = c(«both», «backward», «forward»). 
       Utilizan el AIC como criterio de selección de variables.")
 
-
 step.modelo2 <- stepAIC(modelo2, direction = "backward")
 
 summary(step.modelo2)
 
 # Residual standard error: 35040 on 1439 degrees of freedom
 # Multiple R-squared:  0.8081,	Adjusted R-squared:  0.8055
-# Cual modeolo elegir ?
-=======
+# ¿Cuál modelo elegir ?
+
 # Prediccion de casas
 
 
@@ -291,7 +289,7 @@ ggplot(entrena, aes(x=SalePrice)) +
 
 
 # DEPURAR ******
-# Cómo detectar cuáles variables utilzar como independientes
+# Cómo detectar cuáles variables utilizar como independientes
 # Sólo las variables numéricas
 
 sapply(entrena, is.numeric) # Cuáles son ?
@@ -360,5 +358,11 @@ modelo
 summary(modelo)
 
 
+# ¿Se puede predecir con este modelo?
 
->>>>>>> a39207fa692c36c939fcec6521bbda1214fbf538
+
+# Cuales varibels del modelo2 tienen NA
+which(is.na(modelo2$coefficients))
+
+# quitamos esas variables del modelo
+

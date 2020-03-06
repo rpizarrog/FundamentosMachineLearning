@@ -1,0 +1,10 @@
+name: Publish Document
+title:
+username:
+account: rpubs
+server: rpubs.com
+hostUrl: rpubs.com
+appId: https://api.rpubs.com/api/v1/document/582256/14a1342009794e63a7b64d813494e4d0
+bundleId: https://api.rpubs.com/api/v1/document/582256/14a1342009794e63a7b64d813494e4d0
+url: http://rpubs.com/rpizarro/582256
+when: 1583520082.18524
