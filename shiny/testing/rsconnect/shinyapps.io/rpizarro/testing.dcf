@@ -1,0 +1,12 @@
+name: testing
+title: testing
+username:
+account: rpizarro
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 1909055
+bundleId: 2854629
+url: https://rpizarro.shinyapps.io/testing/
+when: 1583432096.01241
+asMultiple: FALSE
+asStatic: FALSE

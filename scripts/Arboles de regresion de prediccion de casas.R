@@ -17,7 +17,6 @@ entrena <- read_csv("datos/house-prices-advanced-regression-techniques/train.csv
 # Los datos de validación
 valida <- read.csv("datos/house-prices-advanced-regression-techniques/test.csv")
 
-
 # DEPURAR Y LIMPIAR DATOS
 # Detectar cuáles variables a utilizar como independientes
 # y que sólo son variables numéricas
@@ -30,16 +29,13 @@ nombresColumnas
 entrenaNumericas <- select(entrena, nombresColumnas)
 entrenaNumericas
 
-# Renombrar variabes que están con nombres `1...`, `2...`, `3...`
-
+# Solo las variables numéricas
+# Renombra algunas variables
 entrenaNumericas = rename(entrenaNumericas, c(`1stFlrSF`="lstFlrSF"))  # opcion 2, renombra la variable
 entrenaNumericas = rename(entrenaNumericas, c(`2ndFlrSF`="tndFlrSF"))  # renombra la variable
 entrenaNumericas = rename(entrenaNumericas, c(`3SsnPorch`="t3SsnPorch"))  # renombra la variable
 
 entrenaNumericas
-
-# Solo las variables numéricas
-
 
 # Cuantos registros?
 n = nrow(entrenaNumericas)
@@ -74,7 +70,6 @@ prp(arbol, type = 2, nn = TRUE,
 
 arbol$cptable
 
-
 # plotcp(arbol)
 plotcp(arbol)
 
@@ -87,6 +82,31 @@ prp(arbol.Recortado, type = 2, nn = TRUE,
     varlen = 8,  shadow.col = "gray")
 
 
+
+# DEPURAR Y LIMPIAR DATOS DE VALIDACION
+# Detectar cuáles variables a utilizar como independientes
+# y que sólo son variables numéricas
+sapply(valida, is.numeric) # Cuáles son ?
+cualesNumericas <- which(sapply(valida, is.numeric))
+nombresColumnas <- names(cualesNumericas)
+nombresColumnas
+
+# Conjunto de datos de sólo numéricas
+validaNumericas <- select(valida, nombresColumnas)
+validaNumericas
+validaNumericas = rename(validaNumericas, c("X1stFlrSF"="lstFlrSF"))  # opcion 2, renombra la variable
+validaNumericas = rename(validaNumericas, c("X2ndFlrSF"="tndFlrSF"))  # renombra la variable
+validaNumericas = rename(validaNumericas, c("X3SsnPorch"="t3SsnPorch"))  # renombra la variable
+
+validaNumericas
+# Renombrar variabes igual que en los daros de entrenamiento
+
+
+prediccion.venta.price <- predict(arbol.Recortado, newdata = validaNumericas
+)
+
+validaNumericas[1,]
+prediccion.venta.price[1,]
 
 
 
