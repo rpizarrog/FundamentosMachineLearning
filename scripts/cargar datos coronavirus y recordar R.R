@@ -1,6 +1,6 @@
-# Verificar en que directorio estamos
+# Verificar ¿en qué directorio se encentran?
 # cargar los datos de coronavirus
-# Ver cuantos registros tenemos
+# Ver ¿cuántos registros se tienen?
 # summary(datos)
 
 # Cargar las librerías
@@ -30,13 +30,13 @@ ncol(datos)
 
 
 
-# ¿Cuángos casos confirmados ?
+# ¿cuántos casos confirmados ?
 sum(datos$Confirmed)
 
-# ¿cántos desscesos?
+# ¿cuántos desscesos?
 sum(datos$Deaths)
 
-# ¿Porcentaje, descesos confirmados
+# ¿porcentaje, decesos confirmados
 sum(datos$Confirmed / sum(datos$Deaths))
 
 # Porcentaje
@@ -59,7 +59,7 @@ casos
 # Interpretación
 # Llama la atención que en países como Irán y Filipinas hay un alto porcentaje de decesos
 # en relación a los casos detectados
-# Por supuesto en China hay mas casos confirmados y decesos
+# Por supuesto, en China hay mas casos confirmados y decesos
 
 
 
