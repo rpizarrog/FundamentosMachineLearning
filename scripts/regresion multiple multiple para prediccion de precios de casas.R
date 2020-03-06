@@ -178,7 +178,7 @@ número de predictores.")
 #entrenaNumericas$t3SsnPorch <- entrena$`3SsnPorch`
 
 entrenaNumericas = rename(entrenaNumericas, c(`2ndFlrSF`="tndFlrSF"))  # renombra la variable
-entrenaNumericas = rename(entrenaNumericas, c(`3SsnPorch`="t3SsnPorch"))  # renombra la variable
+entrenaNumericas = rename(entrenaNumericas, c(`3SsnPorch`="tSsnPorch"))  # renombra la variable
 
 modelo2 <- lm(formula = SalePrice ~ ., data = entrenaNumericas)
 modelo2

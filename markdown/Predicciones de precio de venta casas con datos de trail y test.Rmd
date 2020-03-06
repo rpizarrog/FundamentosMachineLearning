@@ -223,15 +223,5 @@ potenciales, las estrategias de regresión anteriores definen normalmente un sub
 * Al intentar generar setpAIC se restringue dado que hay algunos Na en los coeficientes del modelo2
 * Hay que quitarl las varibles del modelo
 * which(is.na(modelo2$coefficients))
-```{r}
-modelo2
-# Cuales son NA para quitar ...
-which(is.na(modelo2$coefficients))
-# Generar el modelo2 nuevamente sin esas variables 
-modelo2 <- lm(formula = SalePrice ~ ., data = select(entrenaNumericas, -TotalBsmtSF, -GrLivArea))
-
-step.modelo2 <- stepAIC(modelo2, direction = "backward", trace = FALSE)
-
-summary(step.modelo2)
-```
+* No se ha podido ver en MarkDown
 

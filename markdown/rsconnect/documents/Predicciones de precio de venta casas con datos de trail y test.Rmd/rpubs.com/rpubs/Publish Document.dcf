@@ -1,0 +1,10 @@
+name: Publish Document
+title:
+username:
+account: rpubs
+server: rpubs.com
+hostUrl: rpubs.com
+appId: https://api.rpubs.com/api/v1/document/582315/9fde1bb984b145708586a16e199ef455
+bundleId: https://api.rpubs.com/api/v1/document/582315/9fde1bb984b145708586a16e199ef455
+url: http://rpubs.com/rpizarro/582315/edit
+when: 1583524523.06851
