@@ -230,7 +230,7 @@ which(is.na(modelo2$coefficients))
 # Generar el modelo2 nuevamente sin esas variables 
 modelo2 <- lm(formula = SalePrice ~ ., data = select(entrenaNumericas, -TotalBsmtSF, -GrLivArea))
 
-step.modelo2 <- stepAIC(modelo2, direction = "backward", trace = FALSE)
+step.modelo2 <- stepAIC(modelo2, direction = "backward")
 
 summary(step.modelo2)
 ```

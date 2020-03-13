@@ -1,0 +1,105 @@
+---
+title: "Regresión logística glm() para medir la probabilidad de No pago"
+author: "Rubén Pizarro"
+date: "13/3/2020"
+output: html_document
+---
+
+#### Identificar mediante modelo de regresión logística la probabilidad de pago o no Pago de un cliente
+* En el ejemplo se modela la probabilidad de fraude por impago (default) en función del balance de la cuenta bancaria (balance).
+
+#### Las librerías
+```{r message=FALSE, warning=FALSE}
+library(tidyverse)
+library(ISLR)
+library(dplyr)
+```
+
+
+#### Los datos
+* Default es un connunto de datos ya existente que viene con las librerías cargadas
+```{r message=FALSE, warning=FALSE}
+datos <- Default
+head(datos)
+tail(datos)
+
+```
+
+#### Recodificar valores
+```{r}
+datos <- datos %>%
+  select(default, balance) %>%
+  mutate(default = recode(default,
+                          "No"  = 0,
+                          "Yes" = 1))
+
+head(datos)
+tail(datos)
+```
+
+#### Modelo de regresión lineal lm()
+* No es recomedable para este conjunto de datos
+* Representación gráfica del modelo.
+* Al tratarse de una recta, si por ejemplo, se predice la probabilidad de default para alguien
+que tiene un balance de 10000, 
+el valor obtenido es mayor que 1.
+* No es del todo recomedable y eficiente. 1.2235
+```{r}
+modelo <- lm(default ~ balance, data = datos)
+
+
+ggplot(data = datos, aes(x = balance, y = default)) +
+  geom_point(aes(color = as.factor(default)), shape = 1) + 
+  geom_smooth(method = "lm", color = "gray20", se = FALSE) +
+  theme_bw()  +
+  labs(title = "Regresión lineal por mínimos cuadrados",
+       y = "Probabilidad default") +
+  theme(legend.position = "none")
+head(datos)
+```
+
+
+#### Regresión logística
+* La regresión logística transforma el valor devuelto por la regresión lineal (β0+β1X) empleando una función cuyo resultado está siempre comprendido entre 0 y 1
+* Determina la probabilidad de que sea de un grupo o de otro
+* El coeficiente estimado asociado con un predictor representa el cambio en la función de enlace por cada cambio de unidad en el predictor.
+* balance = 5.499e-03 ¿qué representa?. La probabiidad aumenta un % por cada unidad de Balance
+* Probabilidad_logit = 1.065e+01  + 5.499e-03 * Balance
+* El coeficiente es positivo y es significativo lo cual se puede afirmar que a mayor balance mayor es la probabilidad de Pago de un cliente
+
+```{r}
+modelo <- glm(default ~ balance, data = datos, family = "binomial")
+
+summary(modelo)
+
+
+```
+
+#### Representación gráfica del modelo probabilidad
+```{r}
+ggplot(data = datos, aes(x = balance, y = default)) +
+  geom_point(aes(color = as.factor(default)), shape = 1) + 
+  geom_smooth(method = "glm",
+              method.args = list(family = "binomial"),
+              color = "gray20",
+              se = FALSE) +
+  theme_bw() +
+  theme(legend.position = "none")
+```
+
+
+#### Determinarndo una probabilidad
+* Cliente con balance = 1500 y 2000 en Balance
+```{r}
+# Para el caso de un cliente de 1500 y 2500 en Balance
+
+
+prediccion <- predict(object = modelo, newdata = data.frame(balance = c(1500,2500)), se.fit = TRUE)
+prediccion
+
+predicciones.prob <- exp(prediccion$fit) / (1 + exp(prediccion$fit))
+
+
+predicciones.prob
+```
+
