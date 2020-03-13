@@ -1,0 +1,142 @@
+---
+title: "Arboles de decison para Clasificacion"
+author: "Rubén Pizarro"
+date: "13/3/2020"
+output: html_document
+---
+
+#### Árboles de decisión para clasificación
+
+#### Las librerías
+```{r message=FALSE, warning=FALSE}
+library(dplyr)
+library(tidyverse)
+library(rpart)
+library(rpart.plot)
+library(caret)
+```
+
+#### Los datos
+* No tienen nombres de columnas
+```{r}
+datos <- read.csv("../datos/wine.csv")
+head(datos)
+tail(datos)
+```
+
+#### Poner nombres de columnas
+* 2) Alcohol. Porcentaje de alcohol
+* 3) Malic acid Acido málico es un ácido de origen natural que está presente en muchos alimentos vegetales
+*	4) Ash Ceniza. Producto de la incineración del extracto seco del vino, cuya composición varía según la naturaleza del suelo sobre el cual se ha desarrollado la uva.
+* 5) Alcalinity of ash  Alcalinidad de la ceniza
+*	6) Magnesium. Magnesio
+* 7) Total phenols. Fenoles totales
+*	8) Flavanoids. Flavanoides
+*	9) Nonflavanoid phenols. Fenoles No flavanoides
+*	10) Proanthocyanins. Proantocianinos
+* 11)Color intensity. Intensidad del color
+*	12)Hue. Tono del color
+*	13)OD280/OD315 of diluted wines. OD280/OD315 en vino diluido
+*	14)Proline. Prolino
+```{r}
+colnames(datos) <- c("Tipo.Vino","Alcohol", "Malic.Acid","Ceniza","Alcal.Ceniza",
+"Magnesio", "Fenols.Tot", "Flavanoides", "Fenoles.No.Flava",
+"Proantocianinos", "Int.Color", "Tono.Color", "OD280.OD315", "Prolino")
+head(datos)
+
+unique(datos$Tipo.Vino) # ¿Cuáles tipos de vinos existen ?
+```
+
+#### Explorando los datos
+* Primero factor a TipoVino
+```{r}
+datos$Tipo.Vino <- factor(datos$Tipo.Vino)
+str(datos)
+summary(datos)
+```
+
+#### Crear datos de enrenamiento 70%
+```{r}
+set.seed(2020)
+vino_entrenamiento <- sample_frac(datos, .7)
+head(vino_entrenamiento)
+```
+
+#### Crear datos de prueba o validación
+* setdiff() del paquete base de R, establece la diferencia de un conjunto de datos con respecto a otro
+* De vino_entrenamiento para determinar los datos de prueba
+```{r}
+vino_prueba <- setdiff(datos, vino_entrenamiento)
+head(vino_prueba)
+```
+
+
+#### Entrenando el modelo
+```{r}
+arbol <- rpart(formula = Tipo.Vino ~ ., data = vino_entrenamiento)
+arbol
+```
+
+#### Generando el árbol
+```{r}
+rpart.plot(arbol)
+```
+* Dentro del rectángulo de cada nodo se nos muestra qué proporción de casos pertenecen a cada categoría y
+* La proporción del total de datos que han sido agrupados allí. 
+* Por ejemplo, el rectángulo en el extremo inferior izquierdo de la gráfica tiene 100% de casos en el tipo 1, y 0% en los tipos 2 y 3, que representan 33% de todos los datos.
+
+
+#### Generar predicciones con el modelo
+```{r}
+prediccion_1 <- predict(arbol, newdata = vino_prueba, type = "class")
+```
+
+#### Generando matriz de Confusión
+```{r}
+matriz.confusion_1 <- confusionMatrix(prediccion_1, vino_prueba[["Tipo.Vino"]])
+
+matriz.confusion_1
+
+n <- nrow(vino_prueba) # Total de casos
+print((13 + 22 + 8) / n * 100)
+
+print("Representa el 81% la probabilidad de Éxito del total de los datos")
+```
+
+#### Construir otro modelo
+```{r}
+set.seed(7439)
+vino_entrenamiento_2 <- sample_frac(datos, .7)
+
+vino_prueba_2 <- setdiff(datos, vino_entrenamiento)
+
+arbol_2 <- rpart(formula = Tipo.Vino ~ ., data = vino_entrenamiento_2)
+
+prediccion_2 <- predict(arbol_2, newdata = vino_prueba_2, type = "class")
+
+rpart.plot(arbol_2)
+```
+
+#### Otra matriz de confusión con la prediccion_2
+```{r}
+matriz.confusion_2 <- confusionMatrix(prediccion_2, vino_prueba_2[["Tipo.Vino"]])
+
+matriz.confusion_2
+
+n <- nrow(vino_prueba_2) # Total de casos
+print((14 + 22 + 12) / n * 100)
+
+print("Representa el 90.56% la probabilidad de Éxito del total de los datos")
+```
+
+
+#### ¿Cómo elegimos un modelo?
+* La respuesta depende de los objetivos y qué tanta precisión interese en las predicciones.
+* Por ejemplo, con los datos sobre vinos podría ser que no interesan tanto las reglas específicas para clasificar vinos, sino las variables que son más importantes para distinguirlos. 
+* Lo que nos puede dar pauta areducir el número de variables usadas para catalogar vinos para fines de control de calidad, de las trece originales a un número menor.
+* Por ejemplo, creamos cientos árboles con los mismos datos y después analizar los los modelos que tienen más éxito para clasificar para determinar cuáles variables son las que mejor separan los datos y en qué rangos se encuentran los valores de las reglas. De hecho, este es el principio del método Random Forest, Para otra ocasión
+
+
+Pero también puede ser que el propósito del análisis sea clasificar vinos por riesgo de toxicidad. En este caso sí es importante tener reglas precisas para hacer predicciones.
+
+En todo caso, una manera de elegir un modelo es, en realidad, crear múltiples modelos y compararlos. Por ejemplo, creamos cien árboles con los mismos datos y después analizaos los modelos que tienen más éxito para clasificar para determinar cuáles variables son las que mejor separan los datos y en qué rangos se encuentran los valores de las reglas. De hecho, este es el principio del método Random Forest, pero ese es tema para otro día.

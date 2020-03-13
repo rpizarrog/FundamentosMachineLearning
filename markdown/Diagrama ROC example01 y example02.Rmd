@@ -1,0 +1,105 @@
+---
+title: "Curvas ROC"
+author: "Rubén Pizarro"
+date: "13/3/2020"
+output: html_document
+---
+
+#### Curvas ROC
+
+#### Las librerías
+```{r warning=FALSE, message=FALSE}
+library(ROCR)
+```
+
+
+#### Los datos
+* 0 Fallo
+* 1 Exito
+```{r warning=FALSE, message=FALSE}
+datos1 <- read.csv("../datos/roc-example-1.csv")
+datos2 <- read.csv("../datos/roc-example-2.csv")
+
+
+head(datos1)
+tail(datos1)
+
+head(datos2)
+tail(datos2)
+```
+
+#### Explorando los datos1
+```{r}
+str(datos1)
+summary(datos1)
+```
+
+#### Explorando los datos2
+```{r}
+str(datos2)
+summary(datos2)
+```
+
+#### Generar el objeto prediccion
+* En datos1
+* A partir de las probabilidades y las clases
+ Del paquete ROCR
+```{r}
+predict1 <- prediction(datos1$prob, datos1$class )
+predict1
+
+```
+
+
+#### Elaborar el performance (rendimiejto) de la predicción
+```{r}
+performance1 <- performance(predict1, "tpr", "fpr")
+
+performance1
+```
+
+#### Representando la performance mediante un plot()
+```{r}
+plot(performance1)
+lines(par()$usr[1:2], par()$usr[3:4])
+```
+
+#### Cuándo hacer corte
+* La curva ROC es un clasificador
+* A partir de que valores se tiene la certeza de que da Verdaderos Positivos ó por el contrario
+* Cuando son Falsos Positivos
+* La probabilidad de que sea un TP puede equivocarse en un %
+```{r}
+prob.cut1 <- data.frame(cut = performance1@alpha.values[[1]], fpr=performance1@x.values[[1]],
+tpr=performance1@y.values[[1]]) # Estructura inerna de datos de R
+
+head(prob.cut1)
+tail(prob.cut1)
+```
+
+
+#### Ecnontar un balance de corte
+* Probabilidad de Verdaderos Positivos al 80%
+* Probabilidad aceptable
+* Encontrar un baance entre TP y FP
+```{r}
+prob.cut1 [prob.cut1$tpr >= 0.8,]
+```
+
+#### Interpretración
+* A partir del registro 55 registros se tiene una taza de TP del 81%
+* La probabilidad de acertar en un 81% en TP hay una probabilidad de equivocarse o fallos en 21% aproximadamente
+* El valor del corte es del 49% aproximadamente que significa la probabilia de determinar el exito de los casos 
+
+
+#### Caso del Example2
+* Crear la predicción
+* Crear el valor de performance o rendimiento
+* Graficar plot ROC
+```{r}
+predict2 <- prediction(datos2$prob, datos2$class )
+performance2 <- performance(predict1, "tpr", "fpr")
+plot(performance2)
+lines(par()$usr[1:2], par()$usr[3:4])
+```
+

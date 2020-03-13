@@ -1,0 +1,104 @@
+---
+title: "ACP Analisis de Componentes Principales"
+author: "Rubén Pizarro"
+date: "13/3/2020"
+output: html_document
+---
+
+#### Análisis de Comónenets PRincipales
+* Datos relacionados con crimenes de USA
+* 
+#### Las librerías
+```{r warning=FALSE, message=FALSE}
+
+library(readr)
+library(dplyr)
+```
+
+
+#### Los datos
+* Cifras pro cada 100 mil habitantes
+```{r}
+getwd()
+
+datos  <- read.csv("../datos/USArrests.csv", 
+                  header = TRUE, 
+                  stringsAsFactors = F, 
+                  na.strings = TRUE)
+head(datos)
+tail(datos)
+```
+
+#### Cambiar el nombre de los regisrtos
+* Los nombres de las filas tienen un identificador String
+* Aunque el objetivo no era reducir una columna, en algunos casos es conveniente citar los registros con algún nombre
+* Quitar la columna X, o al menos hacer NULL
+```{r}
+row.names(datos) <- datos$X
+
+#datos$X <- NULL
+datos <- select(datos, Murder, Assault, UrbanPop, Rape)
+
+head(datos)
+
+
+```
+
+#### Calcular la variabilidad para cada columna
+* Apply() por columna
+* var determina la varianza
+* La varianza es una medida de dispersión que representa la variabilidad de una serie de datos respecto a su media. 
+* Formalmente se calcula como la suma de las residuos al cuadrado divididos entre el total de observaciones. 
+* También se puede calcular como la desviación típica al cuadrado
+```{r warning=FALSE, message=FALSE}
+variabilidad <- apply(datos, 2, var)
+variabilidad 
+```
+
+
+#### Determinar ACP
+* Restar las medias de cada variable center
+* Normalizar o standrarizar las variables en los datos con scale
+* prcomp Devuelve la SD de cada componente
+* Sus respectivas rotaciones
+* Determina los coeficientes de cada componente con relación a cada variable
+```{r}
+acp <- prcomp(datos, center = TRUE, scale=TRUE)
+print(acp)
+```
+
+#### Mostrar ACP por por plot de tio lineal
+* Muestra cuales componentes son significativas
+* Usando la técnica del codo, cuando el an´ngulo es sugicieintemente grande ahí determinar cuales comonentes son representativas
+* Quedarse con los componenes variables 1 y 2 y despreciar 3 y 4
+```{r}
+plot(acp, type='l')
+```
+
+
+#### Summary acp
+```{r}
+summary(acp)
+```
+
+#### biplot acp()
+```{r}
+biplot(acp)
+```
+
+#### Calcular solo con los dos comonentes principales
+* Reducir dimensiones
+```{r}
+pc1 <- apply(acp$rotation[,1] * datos, 1, sum)
+
+pc2 <- apply(acp$rotation[,2] * datos, 1, sum)
+
+datos$pc1 <- pc1
+datos$pc2 <- pc2
+
+datos
+
+datos[,-(1:4)]
+
+```
+
