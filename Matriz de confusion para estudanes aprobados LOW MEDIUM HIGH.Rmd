@@ -1,11 +1,11 @@
 ---
-title: "Matriz de Confusion Estudiantes Aprovados Low Medium High"
+title: "Matriz de Confusion Estudiantes Aprobados Low Medium High"
 author: "Rubén Pizarro"
 date: "13/3/2020"
 output: html_document
 ---
 
-#### Matriz de confusión para estudanes aprobados LOW, MEDIUM, HIGH
+#### Matriz de confusión para estudiantes aprobados LOW, MEDIUM, HIGH
 #### Las librerías
 ```{r message=FALSE, warning=FALSE}
 library(readr)
@@ -15,6 +15,7 @@ library(dplyr)
 
 #### Los datos
 ```{r}
+cat("Los datos ...", "https://app.schoology.com/course/2376784342/materials/gp/2390959605") 
 datos <- read.csv("datos/college-perf.csv", 
                   header = TRUE, 
                   stringsAsFactors = F, 

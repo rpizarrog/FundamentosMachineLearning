@@ -1,0 +1,49 @@
+---
+title: "Cliente-gasto-tarjeta-cupon 10 Regs"
+author: "Rubén Pizarro"
+date: "13/3/2020"
+output: html_document
+---
+
+
+#### Regresión logística
+* Datos de 10 clientes que tienen 
+* Gasto en miles anualziado
+* Poseen Tarjeta
+* Utilziaron cupón de promocón
+
+#### Las librerias
+```{r warning=FALSE, message=FALSE}
+library(readr)
+library(dplyr)
+library(ggplot2)
+library(vcd)
+```
+
+
+#### Los datos
+```{r}
+datos <- read.csv("../datos/clientes tienda tarjeta cupon.csv")
+
+datos
+```
+
+#### Explorando los datos
+```{r}
+str(datos)
+summary(datos)
+
+# datos$Tarjeta <- factor(datos$Tarjeta)
+datos$Cupon <- factor(datos$Cupon)
+
+summary(datos)
+```
+
+#### Modelo de regresión logística
+* Cupon es variable Dependiente o Predictiva
+* Gasto.Miles y Tarjeta son variables predictoras o independientes
+```{r}
+modelo <- glm(Cupon ~ Gasto.Miles + Tarjeta, data = datos, family = "binomial")
+summary(modelo)
+```
+

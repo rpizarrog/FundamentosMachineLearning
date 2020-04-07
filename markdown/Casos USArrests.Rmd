@@ -5,8 +5,8 @@ date: "13/3/2020"
 output: html_document
 ---
 
-#### Análisis de Comónenets PRincipales
-* Datos relacionados con crimenes de USA
+#### Análisis de Componenetes Principales
+* Datos relacionados con crímenes de USA
 * 
 #### Las librerías
 ```{r warning=FALSE, message=FALSE}
@@ -58,7 +58,7 @@ variabilidad
 
 #### Determinar ACP
 * Restar las medias de cada variable center
-* Normalizar o standrarizar las variables en los datos con scale
+* Normalizar o standarizar las variables en los datos con scale
 * prcomp Devuelve la SD de cada componente
 * Sus respectivas rotaciones
 * Determina los coeficientes de cada componente con relación a cada variable
@@ -67,7 +67,7 @@ acp <- prcomp(datos, center = TRUE, scale=TRUE)
 print(acp)
 ```
 
-#### Mostrar ACP por por plot de tio lineal
+#### Mostrar ACP por por plot de tipo lineal
 * Muestra cuales componentes son significativas
 * Usando la técnica del codo, cuando el an´ngulo es sugicieintemente grande ahí determinar cuales comonentes son representativas
 * Quedarse con los componenes variables 1 y 2 y despreciar 3 y 4

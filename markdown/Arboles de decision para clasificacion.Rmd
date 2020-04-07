@@ -14,6 +14,7 @@ library(tidyverse)
 library(rpart)
 library(rpart.plot)
 library(caret)
+library(e1071)
 ```
 
 #### Los datos
@@ -80,8 +81,10 @@ arbol
 #### Generando el árbol
 ```{r}
 rpart.plot(arbol)
+
 ```
-* Dentro del rectángulo de cada nodo se nos muestra qué proporción de casos pertenecen a cada categoría y
+
+* Dentro del rectángulo de cada nodo se muestra qué proporción de casos pertenecen a cada categoría y
 * La proporción del total de datos que han sido agrupados allí. 
 * Por ejemplo, el rectángulo en el extremo inferior izquierdo de la gráfica tiene 100% de casos en el tipo 1, y 0% en los tipos 2 y 3, que representan 33% de todos los datos.
 

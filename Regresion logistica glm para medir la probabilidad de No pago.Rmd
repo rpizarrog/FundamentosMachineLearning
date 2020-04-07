@@ -13,6 +13,8 @@ output: html_document
 library(tidyverse)
 library(ISLR)
 library(dplyr)
+library(ggplot2)
+library(plyr)
 ```
 
 
