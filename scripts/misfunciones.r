@@ -1,4 +1,6 @@
-# Funciones para el CASO 3
+# Fecha: 22-Oct-2020
+
+# Funciones para el CASO 3 ... Y CASO 8
 # Crear funciones en R
 
 #######################################################
@@ -21,7 +23,6 @@ flbskgs <- function(pounds) {
   kilos
 }
 
-
 # Recibe un atributo Value de entrada y regresa un valor e salida 
 # pensando en el tipo de datos Value del conjunto de datos.FIFA
 # Vienen datos como '€725K' hay que dejarlo numérico a 725
@@ -38,7 +39,10 @@ fcleanValue <- function(valor.in) {
   valor.out
 }
 
-
+fnames.minusculas <- function (p.datos){
+  names(p.datos) <- tolower(names(p.datos))
+  p.datos
+}
   
 
 # Probar funcion: festatura("6'2")
